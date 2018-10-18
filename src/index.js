@@ -51,7 +51,7 @@ class CashId extends React.Component {
         </div>
         <br />
 
-        <div>generated: {this.state.cashIDuri && this.state.cashIDuri}</div>
+
         <br />
         <div
           className={`${this.props.color} badgerButton`}

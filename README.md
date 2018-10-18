@@ -2,6 +2,9 @@
 
 ## React component to generate QR code and badgerwallet button using CashID
 
+![badgercashid](https://user-images.githubusercontent.com/5941389/47131161-0a7e4a00-d252-11e8-979c-3f10ac90a809.gif)
+
+
 ## Installation
 
 grab from NPM
