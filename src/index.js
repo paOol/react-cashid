@@ -51,7 +51,6 @@ class CashId extends React.Component {
         </div>
         <br />
 
-
         <br />
         <div
           className={`${this.props.color} badgerButton`}
