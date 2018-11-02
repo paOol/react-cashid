@@ -1,6 +1,6 @@
 {
   "name": "react-cashid",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "react component with badgerwallet and QR code support for CashID by Jonathan Silverblood",
   "main": "dist/index.js",
   "scripts": {

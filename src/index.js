@@ -44,14 +44,6 @@ class CashId extends React.Component {
   render() {
     return (
       <CashIDdiv>
-        <div>
-          {this.state.cashIDuri && (
-            <QRCode value={this.state.cashIDuri} style={{ width: 200 }} />
-          )}
-        </div>
-        <br />
-
-        <br />
         <div
           className={`${this.props.color} badgerButton`}
           onClick={() => {
@@ -59,6 +51,16 @@ class CashId extends React.Component {
           }}
         >
           Login with badger
+        </div>
+
+        <br />
+
+        <br />
+        <div>
+          or scan with the CashID manager
+          {this.state.cashIDuri && (
+            <QRCode value={this.state.cashIDuri} style={{ width: 200 }} />
+          )}
         </div>
       </CashIDdiv>
     );
