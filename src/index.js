@@ -6,7 +6,7 @@ import { QRCode } from 'react-qr-svg';
 class CashId extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { web4bch: null, cashIDuri: '' };
+    this.state = { web4bch: null, cashIDuri: '', badger: true };
   }
   componentDidMount() {
     if (typeof window.web4bch !== 'undefined') {
@@ -19,7 +19,9 @@ class CashId extends React.Component {
         web4bch: web4bch
       });
     } else {
-      console.log('web4bch not defined');
+      this.setState({
+        badger: false
+      });
     }
   }
 
@@ -32,7 +34,7 @@ class CashId extends React.Component {
 
   badgerSign(request) {
     let web4bch = this.state.web4bch;
-    if (typeof web4bch === undefined) {
+    if (typeof window.web4bch === undefined) {
       window.open('https://badgerwallet.cash/#/install');
     } else {
       web4bch.bch.sign(web4bch.bch.defaultAccount, request, function(err, res) {
@@ -43,26 +45,44 @@ class CashId extends React.Component {
   }
   render() {
     return (
-      <CashIDdiv>
-        <div
-          className={`${this.props.color} badgerButton`}
-          onClick={() => {
-            this.badgerSign(this.state.cashIDuri);
-          }}
-        >
-          Login with badger
-        </div>
+      <div>
+        {this.state.badger ? (
+          <CashIDdiv>
+            <div
+              className={`${this.props.color} badgerButton`}
+              onClick={() => {
+                this.badgerSign(this.state.cashIDuri);
+              }}
+            >
+              Login with badger
+            </div>
 
-        <br />
-
-        <br />
-        <div>
-          or scan with the CashID manager
-          {this.state.cashIDuri && (
-            <QRCode value={this.state.cashIDuri} style={{ width: 200 }} />
-          )}
-        </div>
-      </CashIDdiv>
+            <br />
+            <br />
+            <div>
+              or scan with CashID manager
+              <br />
+              <br />
+              {this.state.cashIDuri && (
+                <QRCode value={this.state.cashIDuri} style={{ width: 200 }} />
+              )}
+            </div>
+          </CashIDdiv>
+        ) : (
+          <div>
+            you must have{' '}
+            <a
+              href="https://badgerwallet.cash/#/install"
+              rel="nofollow"
+              target="_blank"
+            >
+              {' '}
+              Badger Wallet{' '}
+            </a>{' '}
+            installed to login with CashID
+          </div>
+        )}
+      </div>
     );
   }
 }

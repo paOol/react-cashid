@@ -42,7 +42,7 @@ var CashId = function (_React$Component) {
 
     var _this = _possibleConstructorReturn(this, (CashId.__proto__ || Object.getPrototypeOf(CashId)).call(this, props));
 
-    _this.state = { web4bch: null, cashIDuri: '' };
+    _this.state = { web4bch: null, cashIDuri: '', badger: true };
     return _this;
   }
 
@@ -59,7 +59,9 @@ var CashId = function (_React$Component) {
           web4bch: web4bch
         });
       } else {
-        console.log('web4bch not defined');
+        this.setState({
+          badger: false
+        });
       }
     }
   }, {
@@ -80,7 +82,7 @@ var CashId = function (_React$Component) {
     key: 'badgerSign',
     value: function badgerSign(request) {
       var web4bch = this.state.web4bch;
-      if ((typeof web4bch === 'undefined' ? 'undefined' : _typeof(web4bch)) === undefined) {
+      if (_typeof(window.web4bch) === undefined) {
         window.open('https://badgerwallet.cash/#/install');
       } else {
         web4bch.bch.sign(web4bch.bch.defaultAccount, request, function (err, res) {
@@ -95,25 +97,49 @@ var CashId = function (_React$Component) {
       var _this2 = this;
 
       return _react2.default.createElement(
-        CashIDdiv,
+        'div',
         null,
-        this.state.cashIDuri,
-        _react2.default.createElement(
+        this.state.badger ? _react2.default.createElement(
+          CashIDdiv,
+          null,
+          _react2.default.createElement(
+            'div',
+            {
+              className: this.props.color + ' badgerButton',
+              onClick: function onClick() {
+                _this2.badgerSign(_this2.state.cashIDuri);
+              }
+            },
+            'Login with badger'
+          ),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('br', null),
+          _react2.default.createElement(
+            'div',
+            null,
+            'or scan with CashID manager',
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('br', null),
+            this.state.cashIDuri && _react2.default.createElement(_reactQrSvg.QRCode, { value: this.state.cashIDuri, style: { width: 200 } })
+          )
+        ) : _react2.default.createElement(
           'div',
           null,
-          this.state.cashIDuri && _react2.default.createElement(_reactQrSvg.QRCode, { value: this.state.cashIDuri, style: { width: 200 } })
-        ),
-        _react2.default.createElement('br', null),
-        _react2.default.createElement('br', null),
-        _react2.default.createElement(
-          'div',
-          {
-            className: this.props.color + ' badgerButton',
-            onClick: function onClick() {
-              _this2.badgerSign(_this2.state.cashIDuri);
-            }
-          },
-          'Login with badger'
+          'you must have',
+          ' ',
+          _react2.default.createElement(
+            'a',
+            {
+              href: 'https://badgerwallet.cash/#/install',
+              rel: 'nofollow',
+              target: '_blank'
+            },
+            ' ',
+            'Badger Wallet',
+            ' '
+          ),
+          ' ',
+          'installed to login with CashID'
         )
       );
     }
