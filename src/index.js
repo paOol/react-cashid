@@ -9,18 +9,22 @@ class CashId extends React.Component {
     this.state = { web4bch: null, cashIDuri: '', badger: true };
   }
   componentDidMount() {
-    if (typeof window.web4bch !== 'undefined') {
-      let uri = this.generateURI();
-
+    if (typeof window.web4bch === 'undefined') {
+      window.open('https://badger.bitcoin.com/', '_blank').focus();
+      this.setState({
+        badger: false
+      });
+    } else {
       let web4bch = new window.Web4Bch(window.web4bch.currentProvider);
+      if (!web4bch.bch.defaultAccount) {
+        alert('please unlock your badgerwallet');
+      }
+
+      let uri = this.generateURI();
 
       this.setState({
         cashIDuri: uri,
         web4bch: web4bch
-      });
-    } else {
-      this.setState({
-        badger: false
       });
     }
   }
@@ -32,26 +36,32 @@ class CashId extends React.Component {
     return uri;
   }
 
-  badgerSign(request) {
+  badgerSign(cashIDRequest) {
     let web4bch = this.state.web4bch;
     if (typeof window.web4bch === undefined) {
       window.open('https://badgerwallet.cash/#/install');
     } else {
-      web4bch.bch.sign(web4bch.bch.defaultAccount, request, function(err, res) {
+      web4bch.bch.sign(web4bch.bch.defaultAccount, cashIDRequest, function(
+        err,
+        res
+      ) {
         console.log('res', res);
+        console.log('err', err);
+
         if (err) return;
       });
     }
   }
   render() {
+    let { badger, cashIDuri } = this.state;
     return (
       <div>
-        {this.state.badger ? (
+        {badger ? (
           <CashIDdiv>
             <div
               className={`${this.props.color} badgerButton`}
               onClick={() => {
-                this.badgerSign(this.state.cashIDuri);
+                this.badgerSign(cashIDuri);
               }}
             >
               Login with badger
@@ -63,18 +73,16 @@ class CashId extends React.Component {
               or scan with CashID manager
               <br />
               <br />
-              {this.state.cashIDuri && (
-                <QRCode value={this.state.cashIDuri} style={{ width: 200 }} />
-              )}
+              {cashIDuri && <QRCode value={cashIDuri} style={{ width: 200 }} />}
             </div>
           </CashIDdiv>
         ) : (
           <div>
             you must have{' '}
             <a
-              href="https://badgerwallet.cash/#/install"
-              rel="nofollow"
-              target="_blank"
+              href='https://badgerwallet.cash/#/install'
+              rel='nofollow'
+              target='_blank'
             >
               {' '}
               Badger Wallet{' '}
