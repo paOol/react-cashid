@@ -10,13 +10,12 @@ class CashId extends React.Component {
   }
   componentDidMount() {
     if (typeof window.web4bch === 'undefined') {
-      window.open('https://badger.bitcoin.com/', '_blank').focus();
       this.setState({
         badger: false
       });
     } else {
-      let web4bch = new window.Web4Bch(window.web4bch.currentProvider);
-      if (!web4bch.bch.defaultAccount) {
+      web4bch = new Web4Bch(web4bch.currentProvider);
+      if (web4bch.bch && web4bch.bch.defaultAccount === undefined) {
         alert('please unlock your badgerwallet');
       }
 
@@ -38,15 +37,14 @@ class CashId extends React.Component {
 
   badgerSign(cashIDRequest) {
     let web4bch = this.state.web4bch;
-    if (typeof window.web4bch === undefined) {
-      window.open('https://badgerwallet.cash/#/install');
+    if (typeof web4bch === undefined) {
+      window.open('https://badger.bitcoin.com/', '_blank').focus();
     } else {
       web4bch.bch.sign(web4bch.bch.defaultAccount, cashIDRequest, function(
         err,
         res
       ) {
-        console.log('res', res);
-        console.log('err', err);
+        //console.log('res', res);
 
         if (err) return;
       });
@@ -54,12 +52,13 @@ class CashId extends React.Component {
   }
   render() {
     let { badger, cashIDuri } = this.state;
+    const { qr, color } = this.props;
     return (
       <div>
         {badger ? (
           <CashIDdiv>
             <div
-              className={`${this.props.color} badgerButton`}
+              className={`${color} badgerButton`}
               onClick={() => {
                 this.badgerSign(cashIDuri);
               }}
@@ -69,25 +68,28 @@ class CashId extends React.Component {
 
             <br />
             <br />
-            <div>
-              or scan with CashID manager
-              <br />
-              <br />
-              {cashIDuri && <QRCode value={cashIDuri} style={{ width: 200 }} />}
-            </div>
+            {qr && (
+              <div>
+                or scan with CashID manager
+                <br />
+                <br />
+                {cashIDuri && (
+                  <QRCode value={cashIDuri} style={{ width: 200 }} />
+                )}
+              </div>
+            )}
           </CashIDdiv>
         ) : (
           <div>
-            you must have{' '}
+            you must have&nbsp;
             <a
               href='https://badgerwallet.cash/#/install'
               rel='nofollow'
               target='_blank'
             >
-              {' '}
-              Badger Wallet{' '}
-            </a>{' '}
-            installed to login with CashID
+              Badger Wallet
+            </a>
+            &nbsp;installed to login with CashID
           </div>
         )}
       </div>
@@ -97,6 +99,7 @@ class CashId extends React.Component {
 const CashIDdiv = styled.div`
   display: block;
   .badgerButton {
+    position: relative;
     cursor: pointer;
     display: inline-block;
     min-height: 1rem;
@@ -110,6 +113,7 @@ const CashIDdiv = styled.div`
     margin: 0 0.25rem 0 0;
     padding: 0.75rem 1.5rem 0.75rem;
     color: #ffffff;
+    transition: 0.4s;
     &.red {
       background: #dc3545;
     }
@@ -127,6 +131,9 @@ const CashIDdiv = styled.div`
     }
     &:hover {
       opacity: 0.8;
+    }
+    &:active {
+      bottom: -1px;
     }
   }
 `;

@@ -8,7 +8,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _templateObject = _taggedTemplateLiteral(['\n  display: block;\n  .badgerButton {\n    cursor: pointer;\n    display: inline-block;\n    min-height: 1rem;\n    outline: 0;\n    border: none;\n    border-radius: 5px;\n    vertical-align: baseline;\n    background: #e0e1e2 none;\n    color: rgba(0, 0, 0, 0.6);\n    font-family: Lato, \'Helvetica Neue\', Arial, Helvetica, sans-serif;\n    margin: 0 0.25rem 0 0;\n    padding: 0.75rem 1.5rem 0.75rem;\n    color: #ffffff;\n    &.red {\n      background: #dc3545;\n    }\n    &.blue {\n      background: #0062cc;\n    }\n    &.orange {\n      background: #f59332;\n    }\n    &.grey {\n      background: #4d4d4d;\n    }\n    &.green {\n      background: #28a745;\n    }\n    &:hover {\n      opacity: 0.8;\n    }\n  }\n'], ['\n  display: block;\n  .badgerButton {\n    cursor: pointer;\n    display: inline-block;\n    min-height: 1rem;\n    outline: 0;\n    border: none;\n    border-radius: 5px;\n    vertical-align: baseline;\n    background: #e0e1e2 none;\n    color: rgba(0, 0, 0, 0.6);\n    font-family: Lato, \'Helvetica Neue\', Arial, Helvetica, sans-serif;\n    margin: 0 0.25rem 0 0;\n    padding: 0.75rem 1.5rem 0.75rem;\n    color: #ffffff;\n    &.red {\n      background: #dc3545;\n    }\n    &.blue {\n      background: #0062cc;\n    }\n    &.orange {\n      background: #f59332;\n    }\n    &.grey {\n      background: #4d4d4d;\n    }\n    &.green {\n      background: #28a745;\n    }\n    &:hover {\n      opacity: 0.8;\n    }\n  }\n']);
+var _templateObject = _taggedTemplateLiteral(['\n  display: block;\n  .badgerButton {\n    position: relative;\n    cursor: pointer;\n    display: inline-block;\n    min-height: 1rem;\n    outline: 0;\n    border: none;\n    border-radius: 5px;\n    vertical-align: baseline;\n    background: #e0e1e2 none;\n    color: rgba(0, 0, 0, 0.6);\n    font-family: Lato, \'Helvetica Neue\', Arial, Helvetica, sans-serif;\n    margin: 0 0.25rem 0 0;\n    padding: 0.75rem 1.5rem 0.75rem;\n    color: #ffffff;\n    transition: 0.4s;\n    &.red {\n      background: #dc3545;\n    }\n    &.blue {\n      background: #0062cc;\n    }\n    &.orange {\n      background: #f59332;\n    }\n    &.grey {\n      background: #4d4d4d;\n    }\n    &.green {\n      background: #28a745;\n    }\n    &:hover {\n      opacity: 0.8;\n    }\n    &:active {\n      bottom: -1px;\n    }\n  }\n'], ['\n  display: block;\n  .badgerButton {\n    position: relative;\n    cursor: pointer;\n    display: inline-block;\n    min-height: 1rem;\n    outline: 0;\n    border: none;\n    border-radius: 5px;\n    vertical-align: baseline;\n    background: #e0e1e2 none;\n    color: rgba(0, 0, 0, 0.6);\n    font-family: Lato, \'Helvetica Neue\', Arial, Helvetica, sans-serif;\n    margin: 0 0.25rem 0 0;\n    padding: 0.75rem 1.5rem 0.75rem;\n    color: #ffffff;\n    transition: 0.4s;\n    &.red {\n      background: #dc3545;\n    }\n    &.blue {\n      background: #0062cc;\n    }\n    &.orange {\n      background: #f59332;\n    }\n    &.grey {\n      background: #4d4d4d;\n    }\n    &.green {\n      background: #28a745;\n    }\n    &:hover {\n      opacity: 0.8;\n    }\n    &:active {\n      bottom: -1px;\n    }\n  }\n']);
 
 var _react = require('react');
 
@@ -49,18 +49,21 @@ var CashId = function (_React$Component) {
   _createClass(CashId, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
-      if (typeof window.web4bch !== 'undefined') {
-        var uri = this.generateURI();
+      if (typeof window.web4bch === 'undefined') {
+        this.setState({
+          badger: false
+        });
+      } else {
+        web4bch = new Web4Bch(web4bch.currentProvider);
+        if (web4bch.bch && web4bch.bch.defaultAccount === undefined) {
+          alert('please unlock your badgerwallet');
+        }
 
-        var web4bch = new window.Web4Bch(window.web4bch.currentProvider);
+        var uri = this.generateURI();
 
         this.setState({
           cashIDuri: uri,
           web4bch: web4bch
-        });
-      } else {
-        this.setState({
-          badger: false
         });
       }
     }
@@ -80,14 +83,13 @@ var CashId = function (_React$Component) {
     }
   }, {
     key: 'badgerSign',
-    value: function badgerSign(request) {
+    value: function badgerSign(cashIDRequest) {
       var web4bch = this.state.web4bch;
-      if (_typeof(window.web4bch) === undefined) {
-        window.open('https://badgerwallet.cash/#/install');
+      if ((typeof web4bch === 'undefined' ? 'undefined' : _typeof(web4bch)) === undefined) {
+        window.open('https://badger.bitcoin.com/', '_blank').focus();
       } else {
-        web4bch.bch.sign(web4bch.bch.defaultAccount, request, function (err, res) {
-          console.log('res', res);
-          console.log('err', err);
+        web4bch.bch.sign(web4bch.bch.defaultAccount, cashIDRequest, function (err, res) {
+          //console.log('res', res);
 
           if (err) return;
         });
@@ -98,37 +100,43 @@ var CashId = function (_React$Component) {
     value: function render() {
       var _this2 = this;
 
+      var _state = this.state,
+          badger = _state.badger,
+          cashIDuri = _state.cashIDuri;
+      var _props2 = this.props,
+          qr = _props2.qr,
+          color = _props2.color;
+
       return _react2.default.createElement(
         'div',
         null,
-        this.state.badger ? _react2.default.createElement(
+        badger ? _react2.default.createElement(
           CashIDdiv,
           null,
           _react2.default.createElement(
             'div',
             {
-              className: this.props.color + ' badgerButton',
+              className: color + ' badgerButton',
               onClick: function onClick() {
-                _this2.badgerSign(_this2.state.cashIDuri);
+                _this2.badgerSign(cashIDuri);
               }
             },
             'Login with badger'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('br', null),
-          _react2.default.createElement(
+          qr && _react2.default.createElement(
             'div',
             null,
             'or scan with CashID manager',
             _react2.default.createElement('br', null),
             _react2.default.createElement('br', null),
-            this.state.cashIDuri && _react2.default.createElement(_reactQrSvg.QRCode, { value: this.state.cashIDuri, style: { width: 200 } })
+            cashIDuri && _react2.default.createElement(_reactQrSvg.QRCode, { value: cashIDuri, style: { width: 200 } })
           )
         ) : _react2.default.createElement(
           'div',
           null,
-          'you must have',
-          ' ',
+          'you must have\xA0',
           _react2.default.createElement(
             'a',
             {
@@ -136,12 +144,9 @@ var CashId = function (_React$Component) {
               rel: 'nofollow',
               target: '_blank'
             },
-            ' ',
-            'Badger Wallet',
-            ' '
+            'Badger Wallet'
           ),
-          ' ',
-          'installed to login with CashID'
+          '\xA0installed to login with CashID'
         )
       );
     }

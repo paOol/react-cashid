@@ -35,6 +35,7 @@ npm i react-cashid
       }
     }}
     color="orange"
+    qr="true"
   />
 ```
 
