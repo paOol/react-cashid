@@ -36,6 +36,7 @@ class CashId extends React.Component {
   }
 
   badgerSign(cashIDRequest) {
+    const { callback } = this.props;
     let web4bch = this.state.web4bch;
     if (typeof web4bch === undefined) {
       window.open('https://badger.bitcoin.com/', '_blank').focus();
@@ -44,7 +45,9 @@ class CashId extends React.Component {
         err,
         res
       ) {
-        //console.log('res', res);
+        if (callback !== undefined) {
+          callback();
+        }
 
         if (err) return;
       });
